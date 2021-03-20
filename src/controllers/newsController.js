@@ -1,6 +1,11 @@
+const fs = require('fs');
+const path = require('path');
+
 const Functions = require('../utils/functions');
 
 const News = require('../models/news');
+
+const pathUpload = path.resolve('src/uploads/news');
 
 module.exports = {
 
@@ -19,12 +24,21 @@ module.exports = {
     },
 
     async update(req, res) {
-        
+        try {
+            let news = await News.findByIdAndUpdate(req.params.id, req.body);
+            res.json({
+                msg: "Noticia Atualizada com Sucesso"
+            });
+        } catch (error) {
+            res.status(500).json({
+                msg: "Erro ao atualizar Noticia"
+            });
+        }
     },
 
     async get(req, res) {
         // let remove = await News.findById('604a4402a895b6563c6205f3');
-        // await News.remove(remove);
+        // await News.remove();
         try {
             let news = [];
             if( req.query.limit ){
@@ -42,33 +56,45 @@ module.exports = {
     },
  
     async getById(req, res) {
-        let gallerys = [
-            {
-                _id: '000',
-                name: 'Album Teste',
-                path: Functions.getUniqueHash(),
-                files: [
-                    '0.png',
-                    '1.png'
-                ]
-            },
-            {
-                _id: '001',
-                name: 'Album Teste 2',
-                path: Functions.getUniqueHash(),
-                files: [
-                    '0.png',
-                    '1.png'
-                ]
-            }
-        ];
-
-        let id = req.params.id;
-        let gallery = gallerys.find( gallery => gallery._id === id );
-        res.json(gallery);
+        try {
+            let news = await News.findById(req.params.id);
+            res.json(news);
+        } catch (error) {
+            return res.status(500).json({
+                msg: "Erro ao buscar Noticia"
+            });
+        }
     },
 
     async removeById(req, res) {
 
+    },
+
+    async removeImageById( req, res ){
+        try {
+            let news = await News.findById(req.params.id);
+            let paths = [
+                `${req.params.image}`,
+                `${req.params.image}100x100.webp`,
+                `${req.params.image}200x300.webp`
+            ];
+            for (let index = 0; index < paths.length; index++) {
+                const element = paths[index];
+                if (fs.existsSync(`${pathUpload}/${news.path}/${element}`)) {
+                    fs.unlinkSync(`${pathUpload}/${news.path}/${element}`);
+                }
+            }
+            news.file = undefined;
+            news.fileExt = undefined;
+            await News.findByIdAndUpdate(req.params.id, news);
+            res.json({
+                msg: "Noticia Atualizada com Sucesso"
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                msg: "Erro ao Remover Imagem"
+            });
+        }
     }
 };

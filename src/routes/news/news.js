@@ -15,8 +15,9 @@ class NewsRouter {
         this.routes.get( `${this.path}`, this.controller.get );
         this.routes.get( `${this.path}/:id`, this.controller.getById );
         this.routes.post( `${this.path}`, this.galleryConfiguretion.uploadConfig,this.galleryConfiguretion.resizeImages, this.controller.create );
-        this.routes.put( `${this.path}/:id`, this.controller.update );
+        this.routes.put( `${this.path}/:id`, this.galleryConfiguretion.uploadConfig,this.galleryConfiguretion.resizeImages, this.controller.update );
         this.routes.delete( `${this.path}/:id`, this.controller.removeById );
+        this.routes.delete( `${this.path}/image/:id/:image/:imagext`, this.controller.removeImageById );
 
     }
 }

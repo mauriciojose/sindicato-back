@@ -3,6 +3,8 @@ class NewsConfiguration {
         this.init();
     }
 
+    updatePath(){}
+
     async init(){
 
         const multer  = require('multer');
@@ -20,6 +22,9 @@ class NewsConfiguration {
                 }
                 return cb(null, dir)
                 })
+            },
+            filename: function (req, file, callback) {
+              callback(null, (req.body.file) ? req.body.file :  require('../../utils/functions').getUniqueHash());
             }
         });
             
