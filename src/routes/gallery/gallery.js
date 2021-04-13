@@ -1,7 +1,7 @@
 class GalleryRouter {
     constructor(routes) {
         this.controller = require('../../controllers/galleryController');
-        this.path = '/gallery';
+        this.path = '/api/gallery';
         this.routes = routes;
 
         const GalleryConfiguretion = require('../../config/gallery/gallery');

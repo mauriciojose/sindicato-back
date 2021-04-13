@@ -67,7 +67,21 @@ module.exports = {
     },
 
     async removeById(req, res) {
-
+        try {
+            let news = await News.findById(req.params.id);
+            if (fs.existsSync(`${pathUpload}/${news.path}`)) {
+                fs.rmdirSync(`${pathUpload}/${news.path}`, { recursive: true });
+            }
+            await News.remove(news);
+            res.json({
+                msg: "Noticia Atualizada com Sucesso"
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                msg: "Erro ao Remover Imagem"
+            });
+        }
     },
 
     async removeImageById( req, res ){
@@ -91,7 +105,6 @@ module.exports = {
                 msg: "Noticia Atualizada com Sucesso"
             });
         } catch (error) {
-            console.log(error);
             return res.status(500).json({
                 msg: "Erro ao Remover Imagem"
             });
