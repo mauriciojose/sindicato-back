@@ -1,6 +1,11 @@
+const fs = require('fs');
+const path = require('path');
+
 const Functions = require('../utils/functions');
 
 const Gallery = require('../models/gallery');
+
+const pathUpload = path.resolve('src/uploads/gallery');
 
 module.exports = {
 
@@ -27,9 +32,9 @@ module.exports = {
         // await Gallery.remove(remove);
         try {
             let gallerys = await Gallery.find({});
-            res.json(gallerys);
+            return res.json(gallerys);
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 msg: "Erro ao buscar Galerias"
             });
         }
@@ -64,6 +69,24 @@ module.exports = {
     },
 
     async removeById(req, res) {
-
+        try {
+            let news = await Gallery.findById(req.params.id);
+            if (fs.existsSync(`${pathUpload}/${news.path}`)) {
+                fs.readdirSync(`${pathUpload}/${news.path}`).forEach(file => {
+                    console.log(file);
+                    fs.unlinkSync(`${pathUpload}/${news.path}/${file}`);
+                });
+                fs.rmdirSync(`${pathUpload}/${news.path}`, { recursive: true });
+            }
+            await Gallery.remove(news);
+            return res.json({
+                msg: "Removido com Sucesso"
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                msg: "Erro ao Remover Imagem"
+            });
+        }
     }
 };

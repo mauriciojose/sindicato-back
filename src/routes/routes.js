@@ -9,6 +9,9 @@ const galleryRouter = new GalleryRouter(routes);
 const NewsRouter = require('./news/news');
 const newsRouter = new NewsRouter(routes);
 
+const FilieseRouter = require('./filiese/filiese');
+const filieseRouter = new FilieseRouter(routes);
+
 const UsersRouter = require('./users/users');
 const usersRouter = new UsersRouter(routes);
 

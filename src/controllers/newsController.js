@@ -11,6 +11,7 @@ module.exports = {
 
     async create(req, res) {
         try {
+            console.log(req.body);
             await News.create(req.body);
             res.json({
                 msg: "Noticia Criada com Sucesso"
@@ -43,7 +44,10 @@ module.exports = {
             let news = [];
             if( req.query.limit ){
                 req.query.limit = Number.parseInt(req.query.limit);
-                news = await News.find({}).sort({'createdAt': -1}).limit(req.query.limit);
+                req.query.offset = !req.query.offset ? 0 : Number.parseInt(req.query.offset);
+                news = await News.find({}).sort({'createdAt': -1}).limit(req.query.limit).skip(req.query.offset);
+                let count = await News.count();
+                res.setHeader('X-Total-Count', count);
                 return res.json(news);
             }
             news = await News.find({}).sort({'createdAt': -1});
@@ -70,6 +74,10 @@ module.exports = {
         try {
             let news = await News.findById(req.params.id);
             if (fs.existsSync(`${pathUpload}/${news.path}`)) {
+                fs.readdirSync(`${pathUpload}/${news.path}`).forEach(file => {
+                    console.log(file);
+                    fs.unlinkSync(`${pathUpload}/${news.path}/${file}`);
+                });
                 fs.rmdirSync(`${pathUpload}/${news.path}`, { recursive: true });
             }
             await News.remove(news);
