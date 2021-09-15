@@ -12,6 +12,8 @@ async init(){
     this.routes.post(this.path + '/authenticate', this.controller.authenticate);
     this.routes.post(this.path + '/register', this.controller.register);
     this.routes.post('/email/send',this.EmailController.sendEmailRequest);
+    
+    this.routes.post(this.path + '/authenticate/filiado', this.controller.authenticateFiliado);
     // this.routes.get(this.path + '/test',this.auth.verifyJWT, this.controller.test);
 }
 }

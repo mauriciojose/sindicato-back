@@ -1,21 +1,26 @@
 const mongoose = require('../database/database');
 
+const { v4: uuidv4 } = require('uuid');
+
 const FilieseSchema = new mongoose.Schema({
+    _id: { 
+        type: String
+    },
     nome: {
         type: String,
         require: true,
     },
     cargo: {
         type: String,
-        require: true,
+        // require: true,
     },
     local: {
         type: String,
-        require: true,
+        // require: true,
     },
     secretaria: {
         type: String,
-        require: true,
+        // require: true,
     },
     matricula: {
         type: String,
@@ -23,15 +28,15 @@ const FilieseSchema = new mongoose.Schema({
     },
     data_admissao: {
         type: String,
-        require: true,
+        // require: true,
     },
     rg: {
         type: String,
-        require: true,
+        // require: true,
     },
     orgao_emissor: {
         type: String,
-        require: true,
+        // require: true,
     },
     cpf: {
         type: String,
@@ -39,53 +44,61 @@ const FilieseSchema = new mongoose.Schema({
     },
     estado_civil: {
         type: String,
-        require: true,
+        // require: true,
     },
     naturalidade: {
         type: String,
-        require: true,
+        // require: true,
     },
     data_nascimento: {
         type: String,
-        require: true,
+        // require: true,
     },
     bairro: {
         type: String,
-        require: true,
+        // require: true,
     },
     cidade: {
         type: String,
-        require: true,
+        // require: true,
     },
     estado: {
         type: String,
-        require: true,
+        // require: true,
     },
     logradouro: {
         type: String,
-        require: true,
+        // require: true,
     },
     numero: {
         type: String,
-        require: true,
+        // require: true,
     },
     cep: {
         type: String,
-        require: true,
+        // require: true,
     },
     telefone: {
         type: String,
-        require: true,
+        // require: true,
     },
     email: {
         type: String,
-        require: true,
+        // require: true,
     },
     observacao: {
         type: String,
-        require: true,
+        // require: true,
+    },
+    password: {
+        type: String,
+        select: false
     },
     is_valid: {
+        type: Boolean,
+        default: false
+    },
+    is_filiado: {
         type: Boolean,
         default: false
     },
@@ -97,6 +110,13 @@ const FilieseSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+});
+
+FilieseSchema.pre('save', async function (next) {
+    
+    this._id = uuidv4();
+    
+    next();
 });
 
 const Filiese = mongoose.model('Filiese', FilieseSchema);

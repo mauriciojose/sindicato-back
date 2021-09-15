@@ -4,6 +4,7 @@ require('dotenv/config');
 
 //const EmailService = require('../services/EmailService');
 const User = require('../models/user');
+const Filiese = require('../models/filiese');
 
 module.exports = {
     async register(req, res) {
@@ -56,11 +57,42 @@ module.exports = {
             user.isChecked = undefined;
             user.codigoVerificador = undefined;
 
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+            const token = jwt.sign({ id: user.id, type: "ADMIN" }, process.env.JWT_SECRET, {
                 expiresIn: 21600
             });
 
-            res.send({ user, token });
+            res.send({ user, token, type: 'ADMIN' });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({ erro: 'Erro ao fazer login' });
+        }
+    },
+    async authenticateFiliado(req, res) {
+        try {
+            let { cpf, password } = req.body;
+
+            cpf = cpf.replace( /\D/g, '');
+
+            const user = await Filiese.findOne({ cpf }).select('+password');
+
+            if (!user)
+            return res.status(400).send({ error: 'User not found' });
+
+            // console.log(password, user.password, user);
+            if (!user.is_valid)
+            return res.status(403).send({ error: 'Usuário não tem permissão de acesso"' });
+
+            if (!await bcrypt.compare(password, user.password))
+            return res.status(400).send({ error: 'Invalid password' });
+
+
+            user.password = undefined;
+
+            const token = jwt.sign({ id: user._id, type: "USER" }, process.env.JWT_SECRET, {
+                expiresIn: 21600
+            });
+
+            res.send({ user, token, type: 'USER' });
         } catch (error) {
             console.log(error);
             return res.status(500).send({ erro: 'Erro ao fazer login' });
@@ -81,7 +113,7 @@ module.exports = {
             await User.findOneAndUpdate({ email: email }, { isChecked: true });
             res.send({ msg: 'Validated user' });
         } catch (error) {
-            return res.status(500).send({ error: 'Error ao processar solicitaï¿½ï¿½o' });
+            return res.status(500).send({ error: 'Error ao processar solicitaÃ§Ã£o' });
         }
     }
 };
