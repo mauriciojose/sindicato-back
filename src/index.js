@@ -12,7 +12,7 @@ const app = express();
 app.disable('x-powered-by');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'uploads')));
+app.use('/api/imagens',express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, '/../build')));
 
 let whitelist = ['http://localhost:3000','*'];
