@@ -56,12 +56,32 @@ module.exports = {
         
     },
 
-    async updateValid(req, res) {
+    async updateValidCadastro(req, res) {
         let id = req.params.id;
         try {
             let filieses = await Filiese.findById( id );
             filieses.is_valid = true;
-            filieses.password = await bcrypt.hash(filieses.matricula, 10);;
+            filieses.password = await bcrypt.hash(filieses.matricula, 10);
+            let news = await Filiese.findByIdAndUpdate(req.params.id, filieses);
+            filieses.password = undefined;
+            return res.json(filieses);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                msg: "Erro ao atualizar Filie-se"
+            });
+        }
+        res.json();
+    },
+
+    async updateValid(req, res) {
+        let id = req.params.id;
+        let codigo = req.params.codigo;
+        try {
+            let filieses = await Filiese.findById( id );
+            filieses.is_valid = true;
+            filieses.matricula = codigo;
+            filieses.password = await bcrypt.hash(filieses.matricula, 10);
             let news = await Filiese.findByIdAndUpdate(req.params.id, filieses);
             filieses.password = undefined;
             return res.json(filieses);

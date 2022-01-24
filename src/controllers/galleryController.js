@@ -31,7 +31,7 @@ module.exports = {
         // let remove = await Gallery.findById('60481cc75edef433bd83de2f');
         // await Gallery.remove(remove);
         try {
-            let gallerys = await Gallery.find({});
+            let gallerys = await Gallery.find({}).sort({'createdAt': -1});
             return res.json(gallerys);
         } catch (error) {
             return res.status(500).json({

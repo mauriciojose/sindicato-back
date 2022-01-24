@@ -75,12 +75,14 @@ module.exports = {
 
             const user = await Filiese.findOne({ cpf }).select('+password');
 
+            // console.log(await Filiese.find({}));
+
             if (!user)
             return res.status(400).send({ error: 'User not found' });
 
             // console.log(password, user.password, user);
             if (!user.is_valid)
-            return res.status(403).send({ error: 'Usuário não tem permissão de acesso"' });
+            return res.status(403).send({ error: 'Usuï¿½rio nï¿½o tem permissï¿½o de acesso"' });
 
             if (!await bcrypt.compare(password, user.password))
             return res.status(400).send({ error: 'Invalid password' });

@@ -5,8 +5,8 @@ module.exports = {
     async verifyJWT(req, res, next){
 
         try {
+            console.log(req.headers['authorization'].split(' '));
             const token = req.headers['authorization'].split(' ')[1];
-            // console.log(token);
             if (!token) return res.status(403).json({ auth: false, message: 'No token provided.' });
             
             jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
